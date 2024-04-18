@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Rol {
+  id Int @id @default(autoincrement())
+
+  users User[]
+
+  name     String   @unique
+  crear    Boolean? @default(false)
+  editar   Boolean? @default(false)
+  ver      Boolean? @default(false)
+  eliminar Boolean? @default(false)
+}
+
+model User {
+  id             Int     @id @default(autoincrement())
+  user           String?
+  name           String?
+  email          String? @unique
+  hashedPassword String? @unique
+
+  rol   Rol @relation(fields: [rolId], references: [id])
+  rolId Int
+
+  cursos        ProgresoUsuario[]
+  Curso         Curso[]
+  Inscripciones Inscripciones[]
+}
+
+model ProgresoUsuario {
+  id         Int     @id @default(autoincrement())
+  completado Boolean @default(false)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  unidad   Unidades @relation(fields: [unidadId], references: [id])
+  unidadId Int
+}
+
+model Unidades {
+  id        Int     @id @default(autoincrement())
+  titulo    String?
+  contenido String?
+  visible Boolean @default(false)
+
+  curso   Curso @relation(fields: [cursoId], references: [id])
+  cursoId Int
+
+  Archivos        Archivos[]
+  ProgresoUsuario ProgresoUsuario[]
+}
+
+model Curso {
+  id Int @id @default(autoincrement())
+
+  nombre      String
+  descripcion String  @db.VarChar(500)
+  activo      Boolean @default(false)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  Unidades      Unidades[]
+  Inscripciones Inscripciones[]
+}
+
+model Archivos {
+  id          Int     @id @default(autoincrement())
+  titulo      String?
+  descripcion String? @db.VarChar(200)
+  urlArchivo  String?
+
+  unidad   Unidades @relation(fields: [unidadId], references: [id])
+  unidadId Int
+}
+
+model Inscripciones {
+  id Int @id @default(autoincrement())
+
+  calificacion1 Int?
+  calificacion2 Int?
+  calificacion3 Int?
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  curso   Curso @relation(fields: [cursoId], references: [id])
+  cursoId Int
+
+  fecha DateTime @default(now())
+}
