@@ -37,7 +37,8 @@ export default function AuthForm() {
   }, [variant]);
 
   useEffect(() => {
-    if (getSession()) {
+    const currentUser = getSession()
+    if (!currentUser.data) {
       router.push("/dashboard");
     }
   }, [router]);
