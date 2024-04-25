@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -9,9 +9,9 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import getSession from "@/app/actions/getSession";
+import { signIn, useSession } from "next-auth/react";
 import axios from "axios";
 
 interface Curso {
@@ -21,33 +21,30 @@ interface Curso {
   userId: number;
 }
 
-export default function Carta(data: any) {
-  const router = useRouter();
-  const currentUser = getSession();
+export default function Carta(data: any, editar: any) {
 
-  const info = {
-    userId: currentUser.id,
-    cursoId: data?.data?.id,
+  const router = useRouter();
+  const currentUser = useSession();
+  
+  const handleInscripcion = () => {
+    router.push("/dashboard/cursos/" + data?.data?.id);
   };
 
-  console.log(data);
-
-  const handleInscripcion = () => {
-    axios
-      .post("/api/inscripcion", info)
-      .then(() => {
-        console.log("exitoso");
-        router.push("/dashboard/cursos/" + data?.data?.id);
-      })
-      .catch(() => {
-        console.log("error");
-      });
+  const handleAdmin = () => {
+    router.push("/dashboard/cursos/registrar/" + data?.data?.id);
   };
 
   return (
     <Card key={data?.data?.id} className="w-[380px]">
       <CardHeader>
-        <CardTitle>{data?.data?.nombre}</CardTitle>
+        <div className="flex flex-row justify-around items-center">
+          <CardTitle>{data?.data?.nombre}</CardTitle>
+          {((data.data.user.email === currentUser.data?.user?.email) || data.editar) && (
+            <Button variant={"outline"} onClick={() => handleAdmin()}>
+              <WrenchScrewdriverIcon height={20} width={20} />
+            </Button>
+          )}
+        </div>
         <CardDescription>Docente: {data?.data?.user?.name}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -61,13 +58,12 @@ export default function Carta(data: any) {
       </CardContent>
       <CardFooter>
         <Button
-          className="w-full justify-evenly"
+          className="w-full justify-evenly bg-[#7A4EFF]"
           onClick={() => {
             handleInscripcion();
           }}
         >
-          Entrar al curso
-          <PencilIcon height={20} width={20} />
+          Detalles del curso
         </Button>
       </CardFooter>
     </Card>

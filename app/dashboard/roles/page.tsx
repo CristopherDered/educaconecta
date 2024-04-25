@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import prisma from '@/app/libs/prismadb'
 import TablaRoles from './components/tablaRoles'
 

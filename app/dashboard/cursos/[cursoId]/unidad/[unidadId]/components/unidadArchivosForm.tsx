@@ -55,7 +55,7 @@ const ArchivosForm: FC<ArchivosFormProps> = ({ unidadId, initialData }) => {
   };
   
   return (
-    <div className="p-4 mt-6 border rounded-md bg-slate-100">
+    <div className="p-4 mt-6 ml-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
         Archivos de unidad
         <Button variant="ghost" type="button" onClick={toggleEdit}>

@@ -4,22 +4,32 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { userId, nombre, descripcion } = body;
+        
+        const { email, nombre, descripcion, name } = body;
 
-        if (!userId || !nombre || !descripcion) {
+        if (!email || !nombre || !descripcion || !name) {
             return new NextResponse('Missing info', { status: 400 });
+        }
+
+        const user = await prisma.user.findUnique({
+          where:{
+            email: email
+          }
+        })
+
+        if (!user){
+          return new NextResponse('Unauthorized', { status: 401 }); 
         }
 
         const newCurso = await prisma.curso.create({
             data: {
-                userId,
+                userId: user.id,
                 nombre,
                 descripcion,
             },
         })
 
         const responseObj = { ...newCurso, cursoId: newCurso.id };
-
         return NextResponse.json(responseObj);
     } catch (error: any) {
         console.log(error, 'REGISTRATION_ERROR')

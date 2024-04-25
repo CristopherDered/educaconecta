@@ -1,19 +1,17 @@
-'use client'
-import React from 'react'
-import Carta from './components/Carta'
+import React, { useState } from "react";
+import Carta from "./components/Carta";
+import getCursos from "../actions/getCursos";
+import getCursosInscritos from "../actions/getCursosInscritos";
 
+const Dashboard = async () => {
+  const cursos = await getCursosInscritos();
 
-const Dashboard = () => {
+  return (  
+      <div className=" mt-5">
+        <Carta cursos={cursos} />
+      </div>
+    
+  );
+};
 
-  return (
-    <div className=' mt-5'>
-
-      
-        <Carta />
-      
-
-    </div>
-  )
-}
-
-export default Dashboard
+export default Dashboard;

@@ -139,7 +139,7 @@ const FormUnidadesCurso: React.FC<FormUnidadesCursoProps> = ({ initialData, curs
             </div>
 
             <p className="mt-4 text-xs text-muted-foreground">
-              Arrastra y suelta para reordenar las unidades
+              {/* Arrastra y suelta para reordenar las unidades */}
             </p>
           </>
         )}

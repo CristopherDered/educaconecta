@@ -8,7 +8,6 @@ interface FormCursoInfoPorps {
     curso: Curso
 }
 const FormCursoInfo: React.FC<FormCursoInfoPorps> = ({ curso }) => {
-    console.log(curso)
     return (
         <div>
             <div>

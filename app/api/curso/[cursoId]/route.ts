@@ -12,7 +12,7 @@ export async function PATCH(
 
         const curso = await prisma.curso.update({
             where:{
-                id: cursoId
+                id: parseInt(cursoId)
             },
             data:{
                 ...body

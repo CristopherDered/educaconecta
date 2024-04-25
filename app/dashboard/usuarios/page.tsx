@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import TablaUsuarios from './components/tablaUsuarios' 
-import prisma from '@/app/libs/prismadb'
-
-
+import getUsuarios from '@/app/actions/getUsarios'
 
 
 const roles = async () => {
-    const data = await prisma?.user.findMany()
+    const data = await getUsuarios()
     
 
     return (

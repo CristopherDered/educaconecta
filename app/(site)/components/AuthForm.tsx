@@ -6,12 +6,9 @@ import { useCallback, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useForm, SubmitHandler, set } from "react-hook-form";
-import { json } from "stream/consumers";
-import getSession from "@/app/actions/getSession";
-import getUsuario from "@/app/actions/getUsuario";
-import prisma from "@/app/libs/prismadb";
-import bcrypt from "bcrypt";
+
 import { toast } from "sonner";
+import { signIn, useSession } from "next-auth/react";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -24,6 +21,7 @@ interface FieldValues {
 }
 
 export default function AuthForm() {
+  const session = useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
@@ -37,11 +35,10 @@ export default function AuthForm() {
   }, [variant]);
 
   useEffect(() => {
-    const currentUser = getSession()
-    if (!currentUser.data) {
+    if (session?.status === "authenticated") {
       router.push("/dashboard");
     }
-  }, [router]);
+  }, [session?.status, router]);
 
   const {
     register,
@@ -56,25 +53,28 @@ export default function AuthForm() {
     if (variant === "REGISTER") {
       axios
         .post("/api/register", { ...data, user: "default" })
-        .then((newUser) => {
-          localStorage.setItem("session", JSON.stringify(newUser.data));
-        })
-        .catch(() => {})
+        .then(() => signIn("credentials", data))
+        .catch(() => toast.error("Something went wrong!"))
         .finally(() => setIsLoading(false));
     }
 
     if (variant === "LOGIN") {
-      axios
-        .post("/api/usuario", data)
-        .then((user) => {
-          localStorage.setItem("session", JSON.stringify(user.data));
+      signIn("credentials", {
+        ...data,
+        redirect: false,
+      })
+        .then((callback) => {
+          console.log(callback);
+          if (callback?.error) {
+            toast.error("Invalid credentials");
+          }
+
+          if (callback?.ok && !callback?.error) {
+            toast.success("Logged in!");
+            router.push("/dashboard");
+          }
         })
-        .catch((error) => {
-          toast("Datos incorrectos");
-        })
-        .finally(() => {        
-          setIsLoading(false);
-        });
+        .finally(() => setIsLoading(false));
     }
   };
 

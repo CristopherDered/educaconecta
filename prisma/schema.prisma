@@ -18,11 +18,11 @@ model Rol {
 
   users User[]
 
-  name     String   @unique
-  crear    Boolean? @default(false)
-  editar   Boolean? @default(false)
-  ver      Boolean? @default(false)
-  eliminar Boolean? @default(false)
+  name        String   @unique
+  crearCurso  Boolean? @default(false)
+  editarCurso Boolean? @default(false)
+  roles       Boolean? @default(false)
+  usuarios    Boolean? @default(false)
 }
 
 model User {
@@ -55,7 +55,7 @@ model Unidades {
   id        Int     @id @default(autoincrement())
   titulo    String?
   contenido String?
-  visible Boolean @default(false)
+  visible   Boolean @default(false)
 
   curso   Curso @relation(fields: [cursoId], references: [id])
   cursoId Int

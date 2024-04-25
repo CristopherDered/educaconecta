@@ -1,14 +1,22 @@
 import prisma from '@/app/libs/prismadb'
+import { useSession } from 'next-auth/react'
+import getCurrentUser from './getCurrentUser'
 
-const getCursosInscritos = async (id: number) => {
+const getCursosInscritos = async () => {
+    
     try {
+        const current = await getCurrentUser()
         
+       
         const cursos = await prisma.inscripciones.findMany({
             where:{
-                userId: id
+                userId: current?.id
             },
             select:{
                 id: true,
+                calificacion1: true,
+                calificacion2: true,
+                calificacion3: true,
                 user:{
                     select:{
                         name: true,
@@ -16,6 +24,7 @@ const getCursosInscritos = async (id: number) => {
                 },
                 curso:{
                     select:{
+                        id: true,
                         nombre: true,
                         descripcion: true
                     }
@@ -24,6 +33,7 @@ const getCursosInscritos = async (id: number) => {
         })
 
         return cursos;
+        
     } catch (error: any) {
         console.log(error)
         return [];

@@ -21,7 +21,7 @@ const ChapterIdPage = async ({ params }: { params: IParams }) => {
         <div className="flex items-center justify-between">
           <div className="w-full">
             <Link
-              href={`/teacher/courses/${params.cursoId}`}
+              href={`/dashboard/cursos/registrar/${params.cursoId}`}
               className="flex items-center mb-6 text-sm transition hover:opacity-75"
             >
               <ArrowLeft className="w-4 h-4 mr-2" /> Volver al curso
@@ -35,7 +35,9 @@ const ChapterIdPage = async ({ params }: { params: IParams }) => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2   mt-3">
+
+        <div 
+        className='grid grid-cols-2 '>
           <ChapterTitleForm
             unidadId={params.unidadId}
             cursoId={params.cursoId}

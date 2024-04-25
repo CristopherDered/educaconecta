@@ -9,45 +9,53 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PencilIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import getSession from "@/app/actions/getSession";
 import getCursosInscritos from "@/app/actions/getCursosInscritos";
+import { getSession, useSession } from "next-auth/react";
+import prisma from "@/app/libs/prismadb";
+import CartaDos from "./CartaDos";
 
-interface Curso {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  userId: number;
+interface CartaProps {
+  cursos: Array<Object>;
 }
 
-export default async function Carta() {
+const Carta: React.FC<CartaProps> = (cursos) => {
   const router = useRouter();
-  const currentUser = getSession();
-  const cursos = await getCursosInscritos(currentUser.id);
+  const user = useSession();
 
   return (
     <div className="grid grid-cols-3 space-x-10 space-y-5">
-      {cursos.map((data) => (
-        <Card key={data?.id} className="w-[380px]">
+      {cursos.cursos.map((data, index) => (
+        <Card key={data.id} className="w-[380px]">
           <CardHeader>
-            <CardTitle>{data.curso.nombre}</CardTitle>
+            <CardTitle>{data?.curso?.nombre}</CardTitle>
             <CardDescription>Docente: {data?.user?.name}</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="flex items-center space-x-4 rounded-md border p-4">
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {data?.curso.descripcion}
+                  {data?.curso?.descripcion}
                 </p>
               </div>
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="space-x-5">
+            
+              <Button
+                className="w-full justify-evenly"
+                variant={"outline"}
+                onClick={() => {
+                  router.push(`/dashboard/calificar/${data?.curso?.id}`);
+                }}
+              >
+                Calificar
+              </Button>
+            
             <Button
-              className="w-full justify-evenly"
+              className="w-full justify-evenly bg-[#7A4EFF] text-white hover:bg-[#7A4EFF]"
               onClick={() => {
-                console.log("click");
+                router.push(`/dashboard/detalles/${data?.curso?.id}`);
               }}
             >
               Entrar al curso
@@ -57,4 +65,5 @@ export default async function Carta() {
       ))}
     </div>
   );
-}
+};
+export default Carta;

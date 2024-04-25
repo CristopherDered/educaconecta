@@ -5,25 +5,24 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { Button } from '@/components/ui/button'
-import getSession from '@/app/actions/getSession'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { toast } from 'sonner'
 
+import { useSession } from "next-auth/react";
 
 
 const Formulario = () => {
-    const currentUser = getSession()
+    const currentUser = useSession()
     const router = useRouter()
 
     useEffect(() => {
-        if (!currentUser) {
+        if (currentUser?.status === 'unauthenticated') {
             router.push('/')
         }
     }, [])
 
     const [info, setInfo] = useState({
-        userId: currentUser.id
     });
 
     const handleInput = (event: any) => {
@@ -33,7 +32,7 @@ const Formulario = () => {
 
 
     const handleSubmit = () => {
-        axios.post('/api/curso', info)
+        axios.post('/api/curso', {...info, ...currentUser.data?.user})
             .then((nuevoCurso) => {
                 router.push(`/dashboard/cursos/registrar/${nuevoCurso.data.id}`)
                 toast("Exitoso.")

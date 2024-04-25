@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 const Logo = () => {
     const router = useRouter();
     const handleClick = () => {
-        router.push('/dashboard/cursos')
+        router.push('/dashboard')
     }
     return (
         <Image
@@ -16,7 +16,6 @@ const Logo = () => {
             height={300}
             width={300}
             src={"/images/logoWith.png"}
-
         />
     )
 }

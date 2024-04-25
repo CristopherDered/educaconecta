@@ -1,39 +1,55 @@
-import React from 'react'
-import Container from '../Container'
-import Logo from './Logo'
-import Search from './Search'
-import UserMenu from './UserMenu'
-import RegistrarCurso from './nuevoCurso'
+import React, { useCallback, useState, useEffect } from "react";
+import Container from "../Container";
+import Logo from "./Logo";
+import Search from "./Search";
+import UserMenu from "./UserMenu";
+import RegistrarCurso from "./nuevoCurso";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Roles from "./Roles";
+import Usuarios from "./Usuarios";
+import getCurrentUser from "@/app/actions/getCurrentUser";
 
-  
-const Navbar = () => {
-    return (
-        <div className='w-full bg-white z-10'>
+const Navbar = async () => {
+  const session = await getCurrentUser();
 
-            <div
-                className='py-4 border-b-[1px]'>
-                <Container>
-                    <div
-                        className='
+  // const router = useRouter();
+  // useEffect(() => {
+  //   if (session?.status === "unauthenticated") {
+  //     router.push("/");
+  //   }
+  // }, [session?.status, router]);
+
+  return (
+    <div className="w-full bg-white z-10">
+      <div className="py-4 border-b-[1px]">
+        <Container>
+          <div
+            className="
                         flex
                         flex-row
                         items-center
                         justify-between
                         gap-3
-                        md:gap-0'>
-                        <Logo />
+                        md:gap-0"
+          >
+            <Logo />
 
-                        <Search />
+            <Search />
 
-                        <RegistrarCurso />
+            
+            {session?.rol.usuarios && <Usuarios />}
 
-                        <UserMenu />
-                    </div>
-                </Container>
+            {session?.rol.roles && <Roles />}
 
-            </div>
-        </div>
-    )
-}
+            {session?.rol.crearCurso && <RegistrarCurso />}            
 
-export default Navbar
+            <UserMenu />
+          </div>
+        </Container>
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;
