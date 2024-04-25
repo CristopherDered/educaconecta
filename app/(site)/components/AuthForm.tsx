@@ -8,6 +8,7 @@ import axios from "axios";
 import { useForm, SubmitHandler, set } from "react-hook-form";
 
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 import { signIn, useSession } from "next-auth/react";
 
 type Variant = "LOGIN" | "REGISTER";
@@ -54,7 +55,7 @@ export default function AuthForm() {
       axios
         .post("/api/register", { ...data, user: "default" })
         .then(() => signIn("credentials", data))
-        .catch(() => toast.error("Something went wrong!"))
+        .catch(() => toast.error("Operacion no permitida"))
         .finally(() => setIsLoading(false));
     }
 
@@ -66,7 +67,7 @@ export default function AuthForm() {
         .then((callback) => {
           console.log(callback);
           if (callback?.error) {
-            toast.error("Invalid credentials");
+            toast.error("Credenciales invalidas");
           }
 
           if (callback?.ok && !callback?.error) {
@@ -75,6 +76,19 @@ export default function AuthForm() {
           }
         })
         .finally(() => setIsLoading(false));
+    }
+  };
+
+  const [typeInput, setTypeInput] = useState("text");
+  const [checked, setChecked] = useState(true);
+
+  const handleInput = () => {
+    if (typeInput === "text") {
+      setTypeInput("password");
+      setChecked(false)
+    } else {
+      setTypeInput("text");
+      setChecked(true)
     }
   };
 
@@ -101,14 +115,20 @@ export default function AuthForm() {
             disabled={isLoading}
           />
 
-          <Input
-            id="password"
-            label="Contraseña"
-            register={register}
-            required
-            errors={errors}
-            disabled={isLoading}
-          />
+          <div className=" flex flex-row items-center space-x-2">
+            <Input
+            
+              id="password"
+              label="Contraseña"
+              register={register}
+              required
+              errors={errors}
+              disabled={isLoading}
+              type={typeInput}
+            />
+
+            <Checkbox checked={checked} onClick={() => handleInput()} />
+          </div>
 
           <div>
             <Button disabled={isLoading} fullWidth type="submit">
