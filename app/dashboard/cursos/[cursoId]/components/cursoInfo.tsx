@@ -28,7 +28,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
       })
       .catch(() => {
         console.log("error");
-      });
+      })
   };
   return (
     <div className="">

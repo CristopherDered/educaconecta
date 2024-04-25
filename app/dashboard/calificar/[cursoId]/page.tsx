@@ -43,7 +43,7 @@ const Calificar = ({ params }: { params: IParams }) => {
           "& > legend": { mt: 2 },
         }}
       >
-        ESTA FUNCION FUNCIONA PASANDOLE EL ID DE LA INSCRIPCION
+        
         <Typography component="legend">Calidad del material</Typography>
 
         <Rating
