@@ -13,8 +13,8 @@ const getCursos = async () => {
                         select:{
                             name: true,
                             email: true,
-                            id: true
-
+                            id: true,
+                            rol: true
                         }
                     }
 

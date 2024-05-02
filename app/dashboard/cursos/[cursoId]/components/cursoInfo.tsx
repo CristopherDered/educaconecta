@@ -5,6 +5,7 @@ import { Curso, Unidades } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface CursoInfoProps {
   curso: Curso & {
@@ -23,8 +24,8 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
     axios
       .post("/api/inscripcion", info)
       .then(() => {
-        console.log("exitoso");
-        router.push("/dashboard/cursos/" + data?.data?.id);
+        toast.success("Bienvenido al curso")
+        router.push("/dashboard/detalles/" + curso.id);
       })
       .catch(() => {
         console.log("error");

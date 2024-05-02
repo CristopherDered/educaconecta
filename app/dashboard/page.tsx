@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import Carta from "./components/Carta";
-import getCursos from "../actions/getCursos";
 import getCursosInscritos from "../actions/getCursosInscritos";
+import getInfoEscuela from "../actions/getInfoEscuela";
 
 const Dashboard = async () => {
   const cursos = await getCursosInscritos();
+  const infoEscuela = await getInfoEscuela()
 
   return (  
       <div className=" mt-5">
-        <Carta cursos={cursos} />
+        <Carta inscripciones={cursos} infoEscuela={infoEscuela}/>
       </div>
     
   );

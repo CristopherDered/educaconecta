@@ -18,7 +18,7 @@ const getCursosByName = async (cadena: string) => {
                 },
                 where: {
                     nombre: {
-                        startsWith: cadena
+                        startsWith: cadena+'%'
 
                     }
                 }

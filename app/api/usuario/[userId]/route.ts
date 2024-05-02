@@ -9,19 +9,25 @@ export async function PATCH(request: Request, { params }: { params: IParams }) {
   try {
     const body = await request.json();
     const { userId } = params;
+    const { user, name, email, rolId} = body
 
+    
     const updateUser = await prisma.user.update({
       where: {
         id: parseInt(userId),
       },
       data:{
-        ...body
+        user,
+        name,
+        email,
+        rolId: parseInt(rolId)
       }
     });
 
     return NextResponse.json(updateUser);
+    
   } catch (error: any) {
     console.log(error, "REGISTRATION_ERROR");
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse(error.meta.target, { status: 500 })
   }
 }

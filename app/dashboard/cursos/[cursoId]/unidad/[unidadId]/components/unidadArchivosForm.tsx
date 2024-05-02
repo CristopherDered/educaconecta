@@ -5,7 +5,7 @@ import axios from "axios";
 import { File, ImageIcon, Loader2, PlusCircle, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from 'sonner';
 import * as z from "zod";
 
 import { FileUpload } from "@/components/file-upload";
@@ -33,11 +33,11 @@ const ArchivosForm: FC<ArchivosFormProps> = ({ unidadId, initialData }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(`/api/unidad/${unidadId}/archivos`, values);
-      toast.success("Course updated");
+      toast.success("Archivo adjunto subido");
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Algo ocurrio, intentalo mas tarde");
     }
   };
 
@@ -45,10 +45,10 @@ const ArchivosForm: FC<ArchivosFormProps> = ({ unidadId, initialData }) => {
     try {
       setDeletingId(id);
       await axios.delete(`/api/unidad/${unidadId}/archivos/${id}`);
-      toast.success("Attachment deleted");
+      toast.success("Archivo adjunto eliminado");
       router.refresh();
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Algo ocurrio, intentalo mas tarde");
     } finally {
       setDeletingId(null);
     }
@@ -60,7 +60,7 @@ const ArchivosForm: FC<ArchivosFormProps> = ({ unidadId, initialData }) => {
         Archivos de unidad
         <Button variant="ghost" type="button" onClick={toggleEdit}>
           {isEditing ? (
-            "Cancel"
+            "Cancelar"
           ) : (
             <>
               <PlusCircle className="w-4 h-4 mr-2" />
@@ -109,12 +109,15 @@ const ArchivosForm: FC<ArchivosFormProps> = ({ unidadId, initialData }) => {
                       <Loader2 className="w-4 h-4 animate-spin" />
                     </div>
                   ) : (
-                    <button
-                      onClick={() => onDelete(adjunto.id)}
-                      className="ml-auto transition hover:opacity-75"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    <div>
+                      
+                    </div>
+                    // <button
+                    //   onClick={() => onDelete(adjunto.id)}
+                    //   className="ml-auto transition hover:opacity-75"
+                    // >
+                    //   <X className="w-4 h-4" />
+                    // </button>
                   )}
                 </div>
               ))}

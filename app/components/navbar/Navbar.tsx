@@ -13,13 +13,6 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 const Navbar = async () => {
   const session = await getCurrentUser();
 
-  // const router = useRouter();
-  // useEffect(() => {
-  //   if (session?.status === "unauthenticated") {
-  //     router.push("/");
-  //   }
-  // }, [session?.status, router]);
-
   return (
     <div className="w-full bg-white z-10">
       <div className="py-4 border-b-[1px]">

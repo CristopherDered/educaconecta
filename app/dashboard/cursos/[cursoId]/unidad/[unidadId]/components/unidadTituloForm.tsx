@@ -6,7 +6,7 @@ import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+import { toast } from 'sonner';
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -52,11 +52,11 @@ const ChapterTitleForm: FC<ChapterTitleFormProps> = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {    
     try {
       await axios.patch(`/api/curso/${cursoId}/unidad/${unidadId}`, values);
-      toast.success("Uniidad actualizada");
+      toast.success("Nombre de unidad actualizado");
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Algo ocurrio mal, intentalo mas tarde");
     }
   };
 
@@ -66,7 +66,7 @@ const ChapterTitleForm: FC<ChapterTitleFormProps> = ({
         Titulo de la unidad
         <Button variant="ghost" type="button" onClick={toggleEdit}>
           {isEditing ? (
-            "Cancel"
+            "Cancelar"
           ) : (
             <>
               <Pencil className="w-4 h-4 mr-2" />

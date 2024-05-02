@@ -10,15 +10,7 @@ const Cursos = async () => {
 
   return (
     <div className=" mt-5">
-      {session && (
-        <div className="grid grid-cols-3  space-y-5">
-          {cursos.map((info, index) => (
-            <div key={index}>
-              <Carta data={info} editar={session.rol.editarCurso} />
-            </div>
-          ))}
-        </div>
-      )}
+      {session && <Carta cursos={cursos} editar={session.rol.editarCurso} />}
     </div>
   );
 };

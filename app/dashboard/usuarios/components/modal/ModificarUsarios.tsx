@@ -1,3 +1,4 @@
+'use client'
 import {
   Dialog,
   DialogClose,
@@ -13,15 +14,18 @@ import { Input } from "@/components/ui/input";
 
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import axios from "axios";
-import { User } from "@prisma/client";
+import { Rol, User } from "@prisma/client";
+
 interface ModalUsariosProps {
   data: User;
+  roles: Rol[]
 }
-
-const ModificarUsarios: React.FC<ModalUsariosProps> = ({ data }) => {
+const ModificarUsarios: React.FC<ModalUsariosProps> = ({ data, roles }) => {
   const [open, setOpen] = useState(false);
+  
+
 
   const [checked, setChecked] = useState(true);
   const [typeInp, setTypInp] = useState("text");
@@ -30,6 +34,7 @@ const ModificarUsarios: React.FC<ModalUsariosProps> = ({ data }) => {
     user: data.user,
     name: data.name,
     email: data.email,
+    rolId: data.rolId
   });
 
   const handleInput = (event: any) => {
@@ -49,7 +54,10 @@ const ModificarUsarios: React.FC<ModalUsariosProps> = ({ data }) => {
   const handleSubmit = () => {
     axios
       .patch(`/api/usuario/${data.id}`, info)
-      .then(() => {})
+      .then((res) => {
+        location.reload();
+        
+      })
       .catch(() => {})
       .finally(() => {
         setOpen(false);
@@ -87,7 +95,17 @@ const ModificarUsarios: React.FC<ModalUsariosProps> = ({ data }) => {
               value={info?.email || ""}
               onChange={(e) => handleInput(e)}
             />
-            TODO: AGREGAR COMBOBOX PARA INSERTAR ROL
+            
+            
+            <select value={info?.rolId}  name="rolId" onChange={(e) => handleInput(e)}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              {roles.map((rol, index) => (
+                <option  key={index} className="font-sans" name="rolId" value={rol.id}>
+                  {rol.name}
+                </option>
+              ))}
+            </select>
+
             <div className="flex flex-row justify-around">
               <Button
                 onClick={() => {

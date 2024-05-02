@@ -1,13 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Curso } from '@prisma/client';
+import { Curso, Escuela } from '@prisma/client';
 import axios from 'axios';
 import { Pencil } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import toast from 'react-hot-toast';
 import * as z from 'zod';
 
 // import { Loading } from '@/components/loading';
@@ -19,23 +19,21 @@ import {
     FormItem,
     FormMessage,
 } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 
-interface DescriptionFormProps {
-    initialData: Curso;
-    courseId: number;
+import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+
+interface DirectorFormProps {
+    initialData: Escuela;
 }
 
 const formSchema = z.object({
-    descripcion: z.string().min(1, {
-        message: 'Description is required',
+    director: z.string().min(1, {
+        message: 'Un nombre es requerido',
     }),
 });
 
-const DescriptionForm: FC<DescriptionFormProps> = ({
-    courseId,
+const DirectorForm: FC<DirectorFormProps> = ({
     initialData,
 }) => {
     const router = useRouter();
@@ -46,7 +44,7 @@ const DescriptionForm: FC<DescriptionFormProps> = ({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            descripcion: initialData.descripcion || '',
+            director: initialData.director || '',
         },
     });
 
@@ -54,8 +52,8 @@ const DescriptionForm: FC<DescriptionFormProps> = ({
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await axios.patch(`/api/curso/${courseId}`, values);
-            toast.success('Descripcion actualizada');
+            await axios.patch(`/api/escuela/${initialData.id}`, values);
+            toast.success('Nombre actualizado');
             toggleEdit();
             router.refresh();
         } catch {
@@ -64,9 +62,9 @@ const DescriptionForm: FC<DescriptionFormProps> = ({
     };
 
     return (
-        <div className="p-4 mt-6 border rounded-md bg-slate-100">
+        <div className="p-4 my-6 border rounded-md bg-slate-100">
             <div className="flex items-center justify-between font-medium">
-                Descripcion del curso
+                Nombre del director general
                 <Button variant="ghost" type="button" onClick={toggleEdit}>
                     {isEditing ? (
                         'Cancelar'
@@ -86,13 +84,13 @@ const DescriptionForm: FC<DescriptionFormProps> = ({
                     >
                         <FormField
                             control={form.control}
-                            name="descripcion"
+                            name="director"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Textarea
+                                        <Input
                                             disabled={isSubmitting}
-                                            placeholder="e.g. 'This course is about...'"
+                                            placeholder="..."
                                             {...field}
                                         />
                                     </FormControl>
@@ -111,14 +109,14 @@ const DescriptionForm: FC<DescriptionFormProps> = ({
                 <p
                     className={cn(
                         'text-sm mt-2',
-                        !initialData.descripcion && 'text-slate-500 italic'
+                        !initialData.director && 'text-slate-500 italic'
                     )}
                 >
-                    {initialData.descripcion || 'No description'}
+                    {initialData.director || 'No description'}
                 </p>
             )}
         </div>
     );
 };
 
-export { DescriptionForm };
+export { DirectorForm };

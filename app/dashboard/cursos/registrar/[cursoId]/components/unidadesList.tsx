@@ -85,7 +85,8 @@ const UnidadesList: FC<UnidadesListProps> = ({ items, onEdit, onReorder }) => {
 
                                         {chapter.titulo}
                                         <div className="flex items-center pr-2 ml-auto gap-x-2">
-                                            {!chapter.visible && <Badge>Publicar</Badge>}
+                                            {/* {!chapter.visible && <Badge>Publicar</Badge>} */}
+                                            
                                             <Pencil
                                                 onClick={() => onEdit(chapter.id + '') }
                                                 className="w-4 h-4 transition cursor-pointer hover:opacity-75"

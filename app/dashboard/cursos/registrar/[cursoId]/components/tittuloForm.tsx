@@ -5,7 +5,7 @@ import axios from 'axios';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { Pencil } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -29,7 +29,7 @@ interface TitleFormProps {
 
 const formSchema = z.object({
     nombre: z.string().min(1, {
-        message: 'Title is required',
+        message: 'Nombre del curso es requerido',
     }),
 });
 
@@ -52,9 +52,9 @@ const TitleForm: FC<TitleFormProps> = ({ courseId, initialData }) => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await axios.patch(`/api/curso/${courseId}`, values);
-            // toast.success('Course updated');
-            // toggleEdit();
-            // router.refresh();
+            toast.success('Nombre actualizado');
+            toggleEdit();
+            router.refresh();
         } catch {
             // toast.error('Something went wrong');
         }
@@ -66,7 +66,7 @@ const TitleForm: FC<TitleFormProps> = ({ courseId, initialData }) => {
                 Nombre del curso
                 <Button variant="ghost" type="button" onClick={toggleEdit}>
                     {isEditing ? (
-                        'Cancel'
+                        'Cancelar'
                     ) : (
                         <>
                             <Pencil className="w-4 h-4 mr-2" />
@@ -99,8 +99,7 @@ const TitleForm: FC<TitleFormProps> = ({ courseId, initialData }) => {
                         />
                         <div className="flex items-center gap-x-2">
                             <Button disabled={!isValid || isSubmitting} type="submit">
-                                {isSubmitting && <div>Cargando</div>}
-                                Save
+                                Guardar
                             </Button>
                         </div>
                     </form>

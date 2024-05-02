@@ -7,10 +7,11 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { user, email, name, password } = body;
+        console.log(body)
+        const { user, email, name, password, rolId } = body;
 
 
-        if (!email || !name || !password || !user) {
+        if (!email || !name || !password || !user || rolId  == -1) {
             return new NextResponse('Missing info', { status: 400 });
         }
         const hashedPassword = await bcrypt.hash(password, 12)
@@ -21,15 +22,16 @@ export async function POST(request: Request) {
                 email,
                 name,
                 hashedPassword,
-                rolId: 1
+                rolId: parseInt(rolId)
 
             }
         });
 
         return NextResponse.json(newUser);
+        
     } catch (error: any) {
         console.log(error, 'REGISTRATION_ERROR')
-        return new NextResponse('Internal error', { status: 500 })
+        return new NextResponse(error.meta.target, { status: 500 })
     }
 
 

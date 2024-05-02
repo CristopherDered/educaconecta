@@ -1,15 +1,20 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import MenuItem from "./MenuItem";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 
 const UserMenu = () => {
-  const router = useRouter();
-  const session = useSession();
-
   
+  const session = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session?.status === "unauthenticated") {
+      router.push("/");
+    }
+  }, [session?.status, router]);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,7 +39,6 @@ const UserMenu = () => {
                 <MenuItem
                   onClick={() => {
                     signOut();
-                    router.push('/')
                   }}
                   label="Salir"
                 />

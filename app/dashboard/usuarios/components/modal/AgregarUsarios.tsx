@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogClose,
@@ -17,24 +18,14 @@ import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Rol } from "@prisma/client";
 
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-
-
-interface Usuario {
-  name: string;
-  email: string;
-  password: string;
-  user: string;
+interface AgregarUsarioProps {
+  roles: Rol[];
 }
 
-interface ModalUsariosProps {}
-
-const AgregarUsario: React.FC<ModalUsariosProps> = async ({}) => {
+const AgregarUsario: React.FC<AgregarUsarioProps> = ({ roles }) => {
   const router = useRouter();
-  
-
   const [open, setOpen] = useState(false);
 
   const [checked, setChecked] = useState(true);
@@ -45,11 +36,11 @@ const AgregarUsario: React.FC<ModalUsariosProps> = async ({}) => {
     name: "",
     email: "",
     password: "",
+    rolId: 1,
   });
 
   const handleInput = (event: any) => {
     setInfo({ ...info, [event.target.name]: event.target.value });
-    console.log(info);
   };
 
   const handleCheckbox = () => {
@@ -67,39 +58,17 @@ const AgregarUsario: React.FC<ModalUsariosProps> = async ({}) => {
       .then(() => {
         toast("Exitoso.");
         router.refresh();
+        setOpen(false)
       })
-      .catch(() => {
-        toast("Ocurrio un error.");
-      })
-      .finally(() => {
-        setInfo({
-          user: "",
-          name: "",
-          email: "",
-          password: "",
-        });
+      .catch((error) => {
+        if (error.response.data === 'User_email_key'){
+            toast.error("El correo ya existe");
+          } else{
+            toast.error("Ocurrio un error, intentalo mas tarde");
+          }
 
-        setOpen(false);
-      });
+      })
   };
-
-  const top100Films = [
-    
-    { label: 'Reservoir Dogs', year: 1992 },
-    { label: 'Braveheart', year: 1995 },
-    { label: 'M', year: 1931 },
-    { label: 'Requiem for a Dream', year: 2000 },
-    { label: 'Amélie', year: 2001 },
-    { label: 'A Clockwork Orange', year: 1971 },
-    { label: 'Like Stars on Earth', year: 2007 },
-    { label: 'Taxi Driver', year: 1976 },
-    { label: 'Lawrence of Arabia', year: 1962 },
-    { label: 'Double Indemnity', year: 1944 },
-    {
-      label: 'Eternal Sunshine of the Spotless Mind',
-      year: 2004,
-    },
-  ];
 
   return (
     <Dialog open={open}>
@@ -148,16 +117,15 @@ const AgregarUsario: React.FC<ModalUsariosProps> = async ({}) => {
               <Checkbox checked={checked} onClick={() => handleCheckbox()} />
             </div>
 
-            Obtener los usuarios 
 
-            <Autocomplete
-              disablePortal
-              size="small"
-              id="combo-box-demo"
-              options={top100Films}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} placeholder="rol" />}
-            />
+            <select name="rolId" onChange={(e) => handleInput(e)}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              {roles.map((rol, index) => (
+                <option key={index} className="font-sans" name="rolId" value={rol.id}>
+                  {rol.name}
+                </option>
+              ))}
+            </select>
 
             <div className="flex flex-row justify-around">
               <Button

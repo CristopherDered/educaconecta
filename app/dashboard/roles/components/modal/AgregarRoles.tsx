@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -34,19 +33,21 @@ const AgregarRoles = () => {
     axios
       .post("/api/roles", info)
       .then(() => {
-        toast("Exitoso.");
+        toast.success("Exitoso");
         router.refresh();
-      })
-      .catch(() => {
-        toast("Ocurrio un error.");
-      })
-      .finally(() => {
         setInfo({
           name: "",
         });
 
         setOpen(false);
-      });
+      })
+      .catch((error) => {
+        if (error.response.data === 'Rol_name_key'){
+          toast.error("Este rol ya existe");
+        } else{
+          toast.error("Ocurrio un error, intentalo mas tarde");
+        }  
+      }) 
   };
 
   return (
@@ -71,7 +72,17 @@ const AgregarRoles = () => {
               onChange={(e) => handleInput(e)}
             />
 
-            <div>
+            <div className="flex flex-row justify-around">
+              <Button
+                onClick={() => {
+                  setOpen(false);
+                }}
+                type="button"
+                variant="outline"
+                className="text-red-600"
+              >
+                Cancelar
+              </Button>
               <Button onClick={() => handleSubmit()} type="submit">
                 Agregar
               </Button>

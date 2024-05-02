@@ -53,9 +53,17 @@ export default function AuthForm() {
 
     if (variant === "REGISTER") {
       axios
-        .post("/api/register", { ...data, user: "default" })
-        .then(() => signIn("credentials", data))
-        .catch(() => toast.error("Operacion no permitida"))
+        .post("/api/register", { ...data, user: "default", "rolId": 1 })
+        .then(() => {
+          signIn("credentials", data);
+        })
+        .catch((error) => {
+          if (error.response.data === 'User_email_key'){
+            toast.error("El correo ya existe");
+          } else{
+            toast.error("Ocurrio un error, intentalo mas tarde");
+          }
+        })
         .finally(() => setIsLoading(false));
     }
 
@@ -71,7 +79,7 @@ export default function AuthForm() {
           }
 
           if (callback?.ok && !callback?.error) {
-            toast.success("Logged in!");
+            toast.success("¡Bienvenido!");
             router.push("/dashboard");
           }
         })
@@ -85,10 +93,10 @@ export default function AuthForm() {
   const handleInput = () => {
     if (typeInput === "text") {
       setTypeInput("password");
-      setChecked(false)
+      setChecked(false);
     } else {
       setTypeInput("text");
-      setChecked(true)
+      setChecked(true);
     }
   };
 
@@ -117,7 +125,6 @@ export default function AuthForm() {
 
           <div className=" flex flex-row items-center space-x-2">
             <Input
-            
               id="password"
               label="Contraseña"
               register={register}

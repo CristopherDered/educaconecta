@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+model Escuela {
+  id Int @id @default(autoincrement())
+  director String @default("Patricio Rodriguez")
+}
+
 model Rol {
   id Int @id @default(autoincrement())
 

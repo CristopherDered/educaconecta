@@ -27,6 +27,7 @@
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",
+    "@react-pdf/renderer": "^3.4.4",
     "@uploadthing/react": "^6.4.4",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",

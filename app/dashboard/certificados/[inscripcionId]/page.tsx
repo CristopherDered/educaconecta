@@ -1,36 +1,41 @@
-import React from "react";
+import React from 'react';
+import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import ReactDOM from 'react-dom';
+import { PDFViewer } from '@react-pdf/renderer';
 
-const Certificado = () => {
-  return (
-    <div className="space-y-10 mt-20">
-      <div className="text-center">
-        <span className="border-2 border-black rounded-full px-5 py-3 text-3xl">
-          RECONOCIMIENTO
-        </span>
-      </div>
 
-      <div className="grid grid-rows-3 gap-4 mx-20 px-14 pt-10 border-4 rounded-3xl text-2xl border-[#794CFF] ">
-        <div className="text-center">
-          <p className="text-2xl">Se le otorga el presente certificado a:</p>
-          <p className="font-bold">NOMBRE DEL ALUMNO</p>
-        </div>
-        <div className="">
-          Por concluir stisfactoriamente el curso de:{" "}
-          <u className="font-bold">NOMBRE DEL CURSO</u>. con el profesor:{" "}
-          <u className="font-bold">NOMBRE DEL PROFESOR</u>. Esperamos haya sido
-          de su agrado y pueda realizar mas estudios con nosotros
-        </div>
-        <div className="text-end place-items-end mt-1">
-          <div>
-            ----------------------
-            <p>FIRMA</p>
-            <p>Lic. Patricio Rodriguez</p>
-            <p>Director general de educaconecta</p>
-          </div>
-        </div>
-      </div>
-    </div>
+// Create styles
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'row',
+    backgroundColor: '#E4E4E4'
+  },
+  section: {
+    margin: 10,
+    padding: 10,
+    flexGrow: 1
+  }
+});
+
+// Create Document Component
+const Certificado = () => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.section}>
+        <Text>Section #1</Text>
+      </View>
+      <View style={styles.section}>
+        <Text>Section #2</Text>
+      </View>
+    </Page>
+  </Document>
+);
+
+const App = () => (
+    <PDFViewer>
+      <Certificado />
+    </PDFViewer>
   );
-};
+  
 
-export default Certificado;
+export default App

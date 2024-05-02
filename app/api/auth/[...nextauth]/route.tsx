@@ -40,9 +40,6 @@ export const authOptions: AuthOptions = {
         if (!isCorrectPassword) {
             throw new Error('Invalid aqui Credentials')
         }
-        console.log('.............................................')
-        console.log(user)
-        console.log('.............................................')
         return user;
       },
     }),

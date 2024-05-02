@@ -16,12 +16,10 @@ export async function POST(request: Request) {
             data: body
         });
 
-      
-
         return NextResponse.json(newRol);
     } catch (error: any) {
         console.log(error, 'REGISTRATION_ERROR')
-        return new NextResponse('Internal error', { status: 500 })
+        return new NextResponse(error.meta.target, { status: 500 })
     }
 
 
