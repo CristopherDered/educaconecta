@@ -28,7 +28,26 @@ const getCursosInscritos = async () => {
                         descripcion: true,
                         Unidades: {
                             select: {
-                                id: true
+                                id: true,
+                                titulo: true,
+
+                                ProgresoUsuario:{
+                                    select:{
+                                        completado: true
+
+                                    },
+                                    where:{
+                                        userId: current?.id
+                                    }
+                                }
+                            }
+                        },
+                        user:{
+                            select:{
+                                user: true,
+                                name: true,
+                                email: true,
+
                             }
                         }
                     }
@@ -36,25 +55,26 @@ const getCursosInscritos = async () => {
             }
         })
 
-        // Verificar si todas las unidades del curso están completadas para el usuario
-        const cursosConEstado = await Promise.all(cursos.map(async (inscripcion) => {
-            const unidadesCompletadas = await prisma.progresoUsuario.count({
-                where: {
-                    userId: current?.id,
-                    unidad: {
-                        cursoId: inscripcion.curso.id
-                    },
-                    completado: true
-                }
-            });
+        const cursosConProgreso = cursos.map((curso, index) =>{
+          const cursosCompletados = curso.curso.Unidades.map((unidad, index) =>{
+           const progresoUsuario = unidad.ProgresoUsuario.find((progreso) => progreso.completado) 
+           return {
+            ...unidad,
+            completado: progresoUsuario ? true : false,
+           }
+          })
 
-            return {
-                ...inscripcion,
-                cursoTerminado: unidadesCompletadas === inscripcion.curso.Unidades.length
-            };
-        }));
+          const isCompleto = cursosCompletados.every((unidad )=> unidad.completado)
+          return {
+            ...cursosCompletados,
+            ...curso,
+            cursoTerminado: isCompleto
+          }
 
-        return cursosConEstado;
+        })
+
+        return cursosConProgreso
+        
         
     } catch (error: any) {
         console.log(error)

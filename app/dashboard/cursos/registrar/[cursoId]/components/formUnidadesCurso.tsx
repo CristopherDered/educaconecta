@@ -1,54 +1,61 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Unidades, Curso } from '@prisma/client';
-import axios from 'axios';
-import { Loader2, PlusCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import * as z from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Unidades, Curso } from "@prisma/client";
+import axios from "axios";
+import { Loader2, PlusCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { FC, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { toast } from "sonner";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { UnidadesList } from './unidadesList';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { UnidadesList } from "./unidadesList";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 interface FormUnidadesCursoProps {
-  initialData: Curso[]
+  initialData: Curso[];
   cursoId: number;
 }
 
-
-
 const formSchema = z.object({
-  titulo: z.string().min(1),
+  titulo: z
+    .string()
+    .min(5, {message: "El nombre de la unidad debe de tener minimo 5 caracteres"})
+    .max(80, "El nombre de la unidad debe de tener maximo 80 caracteres")
+    .regex(
+      /^[A-Za-z0-9][A-Za-z0-9\s]+$/i,
+      "Nombre de la unidad invalido, solo se aceptan letras y numeros"
+    ),
 });
 
-const FormUnidadesCurso: React.FC<FormUnidadesCursoProps> = ({ initialData, cursoId }) => {
+const FormUnidadesCurso: React.FC<FormUnidadesCursoProps> = ({
+  initialData,
+  cursoId,
+}) => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
-  console.log(initialData)
+  console.log(initialData);
 
   const toggleCreating = () => {
     setIsCreating((prev) => !prev);
   };
 
-
-  const onReorder = async (updateData: { id: string; position: number }[]) => {
-
-  };
+  const onReorder = async (
+    updateData: { id: string; position: number }[]
+  ) => {};
 
   const onEdit = (id: string) => {
     router.push(`/dashboard/cursos/${cursoId}/unidad/${id}`);
@@ -57,18 +64,20 @@ const FormUnidadesCurso: React.FC<FormUnidadesCursoProps> = ({ initialData, curs
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      titulo: '',
+      titulo: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(`/api/curso/${cursoId}/unidad`, values);
-      toast.success('Chapter created');
+      toast.success("Unidad creada");
       toggleCreating();
+      form.reset()
       router.refresh();
+
     } catch {
-      toast.error('Something went wrong');
+      toast.error("Algo salio mal, intentalo mas tarde");
     }
   };
 
@@ -78,16 +87,11 @@ const FormUnidadesCurso: React.FC<FormUnidadesCursoProps> = ({ initialData, curs
     <div>
       <div className="p-4 mt-6 border rounded-md bg-slate-100">
 
-        {/* <div className="absolute top-0 right-0 flex items-center justify-center w-full h-full bg-slate-500/20 rounded-m">
-          AQUI VA EL LOADEER
-          
-        </div> */}
-
         <div className="flex items-center justify-between font-medium">
           Unidades del curso
           <Button variant="ghost" type="button" onClick={toggleCreating}>
             {isCreating ? (
-              'Cancel'
+              "Cancel"
             ) : (
               <>
                 <PlusCircleIcon className="w-4 h-4 mr-2" />
@@ -117,23 +121,21 @@ const FormUnidadesCurso: React.FC<FormUnidadesCursoProps> = ({ initialData, curs
                   </FormItem>
                 )}
               />
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button disabled={isSubmitting} type="submit">
                 Crear
               </Button>
             </form>
           </Form>
         ) : (
           <>
-            <div
-              className={'text-sm mt-2'}
-            >
+            <div className={"text-sm mt-2"}>
               {/* {!initialData.chapters.length ? (
                 'No chapters'
               ) : ( */}
               <UnidadesList
                 onEdit={onEdit}
                 onReorder={onReorder}
-                items={ initialData || []}
+                items={initialData || []}
               />
               {/* )} */}
             </div>
@@ -145,7 +147,7 @@ const FormUnidadesCurso: React.FC<FormUnidadesCursoProps> = ({ initialData, curs
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FormUnidadesCurso
+export default FormUnidadesCurso;

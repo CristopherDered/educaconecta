@@ -39,7 +39,7 @@ const TablaUsuarios: React.FC<TablaUsuariosProps> = ({ usuarios, roles }) => {
               ])}
               search={false}
               pagination={{
-                limit: 8,
+                limit: 6,
               }}
               columns={["USUARIO", "NOMBRE COMPLETO", "CORREO", "ROL", "MODIFICAR"]}
               className={{

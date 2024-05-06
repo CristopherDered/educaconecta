@@ -13,15 +13,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
+import getCurrentUser from "@/app/actions/getCurrentUser";
 
 interface CursoProps {
   cursos: Curso[];
+  editar: boolean;
 }
 
-const Carta: React.FC<CursoProps> = ({ cursos }) => {
+const Carta: React.FC<CursoProps> = ({ cursos, editar }) => {
+  
   const router = useRouter();
   const [value, setValue] = useState("");
   const currentUser = useSession();
+
+  
 
   const handleInscripcion = (id: number) => {
     router.push("/dashboard/cursos/" + id);
@@ -34,6 +39,8 @@ const Carta: React.FC<CursoProps> = ({ cursos }) => {
   const handleInput = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setValue(evt.target.value);
   };
+
+
 
   // Filtrar cursos según el valor ingresado en el input
   const filteredCursos = cursos.filter((curso) =>
@@ -57,7 +64,7 @@ const Carta: React.FC<CursoProps> = ({ cursos }) => {
             <CardHeader>
               <div className="flex flex-row justify-around items-center">
                 <CardTitle>{curso.nombre}</CardTitle>
-                {(curso.user.email === currentUser.data?.user?.email || curso.user.rol.editarCurso) && (
+                {(curso.user.email == currentUser.data?.user?.email || editar) && (
                   <Button
                     variant="outline"
                     onClick={() => handleAdmin(curso.id)}

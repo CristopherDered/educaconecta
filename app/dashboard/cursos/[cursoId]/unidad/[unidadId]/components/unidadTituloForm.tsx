@@ -6,7 +6,7 @@ import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -27,9 +27,15 @@ interface ChapterTitleFormProps {
   unidadId: number;
 }
 
-
 const formSchema = z.object({
-  titulo: z.string().min(1),
+  titulo: z
+    .string()
+    .min(5, "El nombre de la unidad debe de tener minimo 5 caracteres")
+    .max(80, "El nombre de la unidad debe de tener maximo 80 caracteres")
+    .regex(
+      /^[A-Za-z0-9][A-Za-z0-9\s]+$/i,
+      "Nombre de la unidad invalido, solo se aceptan letras y numeros"
+    ),
 });
 
 const ChapterTitleForm: FC<ChapterTitleFormProps> = ({
@@ -49,7 +55,7 @@ const ChapterTitleForm: FC<ChapterTitleFormProps> = ({
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {    
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/curso/${cursoId}/unidad/${unidadId}`, values);
       toast.success("Nombre de unidad actualizado");
@@ -89,7 +95,7 @@ const ChapterTitleForm: FC<ChapterTitleFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="e.g. 'Introduction to the course'"
+                      placeholder="e.g. 'Introduccion al curso'"
                       {...field}
                     />
                   </FormControl>
@@ -98,7 +104,7 @@ const ChapterTitleForm: FC<ChapterTitleFormProps> = ({
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button disabled={isSubmitting} type="submit">
                 Guardar
               </Button>
             </div>

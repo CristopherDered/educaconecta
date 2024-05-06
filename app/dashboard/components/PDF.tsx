@@ -114,7 +114,7 @@ const Certificado: React.FC<CertificadoProps> = ({
         <View style={styles.signature}>
           <Image src={"/images/Firma.png"} style={styles.imageFirma} />
           <Text style={styles.signatureText}>Firma _________________</Text>
-          <Text style={styles.signatureText}>Lic. {director}</Text>
+          <Text style={styles.signatureText}>{director}</Text>
           <Text style={styles.signatureText}>
             Director general de educaconecta
           </Text>

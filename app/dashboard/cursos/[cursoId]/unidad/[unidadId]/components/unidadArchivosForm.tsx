@@ -5,7 +5,7 @@ import axios from "axios";
 import { File, ImageIcon, Loader2, PlusCircle, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 import * as z from "zod";
 
 import { FileUpload } from "@/components/file-upload";
@@ -53,7 +53,7 @@ const ArchivosForm: FC<ArchivosFormProps> = ({ unidadId, initialData }) => {
       setDeletingId(null);
     }
   };
-  
+
   return (
     <div className="p-4 mt-6 ml-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
@@ -101,24 +101,24 @@ const ArchivosForm: FC<ArchivosFormProps> = ({ unidadId, initialData }) => {
                   key={adjunto.id}
                   className="flex items-center w-full p-3 border rounded-sm border-sky-200 text-sky-700"
                 >
-                 
                   <File className="flex-shrink-0 w-4 h-4 mr-2" />
                   <p className="text-xs line-clamp-1">{adjunto.titulo}</p>
+                  <div className="flex items-center pr-2 ml-auto gap-x-2">
+
                   {deletingId === adjunto.id ? (
                     <div>
                       <Loader2 className="w-4 h-4 animate-spin" />
                     </div>
                   ) : (
-                    <div>
-                      
-                    </div>
-                    // <button
-                    //   onClick={() => onDelete(adjunto.id)}
-                    //   className="ml-auto transition hover:opacity-75"
-                    // >
-                    //   <X className="w-4 h-4" />
-                    // </button>
+                      <button
+                        onClick={() => onDelete(adjunto.id)}
+                        className="ml-auto transition hover:opacity-75"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                   )}
+
+                  </div>
                 </div>
               ))}
             </div>

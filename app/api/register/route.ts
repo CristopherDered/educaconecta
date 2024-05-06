@@ -10,8 +10,8 @@ export async function POST(request: Request) {
         console.log(body)
         const { user, email, name, password, rolId } = body;
 
-
-        if (!email || !name || !password || !user || rolId  == -1) {
+        
+        if (!email || !name || !password || !user || !rolId ) {
             return new NextResponse('Missing info', { status: 400 });
         }
         const hashedPassword = await bcrypt.hash(password, 12)

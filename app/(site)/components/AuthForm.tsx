@@ -1,25 +1,60 @@
 "use client";
 
 import Button from "@/app/components/Button";
-import Input from "@/app/components/inputs/Input";
 import { useCallback, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useForm, SubmitHandler, set } from "react-hook-form";
+import { Input } from "@/components/ui/input";
 
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+type Variant = "LOGIN" | "REGISTER";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { signIn, useSession } from "next-auth/react";
 
-type Variant = "LOGIN" | "REGISTER";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface FieldValues {
-  user: "";
-  name: "";
-  email: "";
-  password: "";
-  rolId: 1;
-}
+const formSchema = z.object({
+  user: z
+    .string()
+    .min(5, "El usario debe tener un minimo de 5 caracteres")
+    .max(25, "El usario debe tener un maximo de 25 caracteres")
+    .regex(
+      /^[a-zA-Z0-9][a-zA-Z0-9\s]*$/i,
+      "El usuario solo puede contenter letras o numeros"
+    )
+    .optional()
+    .or(z.literal("")),
+  name: z
+    .string()
+    .min(5, "El usario debe tener un minimo de 5 caracteres")
+    .max(70, "El usario debe tener un maximo de 70 caracteres")
+    .regex(
+      /^[a-zA-Z][a-zA-Z\s]*$/i,
+      "El usuario solo puede contenter letras"
+    )
+    .optional()
+    .or(z.literal("")),
+  email: z.string().email("Email invalido"),
+  password: z
+    .string()
+    .min(6, "La contraseña debe de tener una longitud minima de 6")
+    .max(170, "La contraseña debe de tener una longitud maxima de 170")
+    .optional()
+    .or(z.literal("")),
+  rolId: z.number().default(1),
+});
 
 export default function AuthForm() {
   const session = useSession();
@@ -41,26 +76,34 @@ export default function AuthForm() {
     }
   }, [session?.status, router]);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<FieldValues>();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      rolId: 1,
+      user: "",
+    },
+  });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const SubmitHandler = (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
 
     if (variant === "REGISTER") {
       axios
-        .post("/api/register", { ...data, user: "default", "rolId": 1 })
+        .post("/api/register", { ...values, user: "default", rolId: 1 })
         .then(() => {
-          signIn("credentials", data);
+          signIn("credentials", values);
+          toast.success("Registrado correctamente")
         })
         .catch((error) => {
-          if (error.response.data === 'User_email_key'){
+          if (error.response.data === "User_email_key") {
             toast.error("El correo ya existe");
-          } else{
+          }else if (error.response.data == "Missing info"){
+            toast.error("Completa el formulario :p");
+          }
+           else {
             toast.error("Ocurrio un error, intentalo mas tarde");
           }
         })
@@ -69,7 +112,7 @@ export default function AuthForm() {
 
     if (variant === "LOGIN") {
       signIn("credentials", {
-        ...data,
+        ...values,
         redirect: false,
       })
         .then((callback) => {
@@ -103,58 +146,71 @@ export default function AuthForm() {
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div className=" px-4 py-8  sm:px-10">
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          {variant === "REGISTER" && (
-            <Input
-              id="name"
-              label="Nombre"
-              register={register}
-              errors={errors}
-              disabled={isLoading}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(SubmitHandler)}
+            className="space-y-8"
+          >
+            {variant === "REGISTER" && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="user"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Nombre de usuario" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Nombre completo" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Correo electronico" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          )}
-
-          <Input
-            id="email"
-            label="Email"
-            register={register}
-            required
-            errors={errors}
-            disabled={isLoading}
-          />
-
-          <div className=" flex flex-row items-center space-x-2">
-            <Input
-              id="password"
-              label="Contraseña"
-              register={register}
-              required
-              errors={errors}
-              disabled={isLoading}
-              type={typeInput}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Contraseña" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <Checkbox checked={checked} onClick={() => handleInput()} />
-          </div>
-
-          <div>
             <Button disabled={isLoading} fullWidth type="submit">
               {variant === "LOGIN" ? "Iniciar sesion" : "Registrarse"}
             </Button>
-          </div>
-        </form>
-
-        <div
-          className="
-                flex
-                gap-2
-                justify-center
-                text-sm
-                mt-6
-                px-2
-                text-gray-500
-                "
-        >
+          </form>
+        </Form>
+        <div className=" flex gap-2 justify-center text-sm mt-6 px-2 text-gray-500">
           <div>
             {variant === "LOGIN"
               ? "Nuevo en educaconecta?"

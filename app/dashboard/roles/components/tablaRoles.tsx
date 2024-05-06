@@ -89,7 +89,7 @@ const TablaRoles: React.FC<TablaRolesProps> = ({ datos }) => {
             })}
             search={false}
             pagination={{
-              limit: 100,
+              limit: 6,
             }}
             columns={[
               "ROL",

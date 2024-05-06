@@ -24,21 +24,22 @@ interface CartaProps {
 const Carta: React.FC<CartaProps> = ({ inscripciones, infoEscuela }) => {
   const router = useRouter();
   const user = useSession()
+
   
   return (
     <div className="grid grid-cols-3 space-x-10 space-y-5">
       {inscripciones.map((inscripcion, index) => (
-        <Card key={inscripcion.id} className="w-[380px]">
+        <Card key={inscripcion.id} className="w-[380px]"> 
           <CardHeader>
             <CardTitle>{inscripcion?.curso?.nombre}</CardTitle>
 
             <CardDescription>
-              Docente: {inscripcion?.user?.name}
+              Docente: {inscripcion?.curso?.user?.name}
             </CardDescription>
             {
               inscripcion.cursoTerminado && ( 
             <PDFDownloadLink
-              document={<Certificado director={infoEscuela.director} alumno={user.data?.user?.name} curso={inscripcion?.curso?.nombre} profesor={inscripcion?.user?.name} />}
+              document={<Certificado director={infoEscuela.director} alumno={user.data?.user?.name} curso={inscripcion?.curso?.nombre} profesor={inscripcion?.curso?.user?.name} />}
               fileName="Certificado.pdf"
             >
               {({ loading, url, error, blob }) =>

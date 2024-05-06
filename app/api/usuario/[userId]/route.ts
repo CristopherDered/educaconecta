@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt'
 import prisma from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
 
@@ -9,23 +10,42 @@ export async function PATCH(request: Request, { params }: { params: IParams }) {
   try {
     const body = await request.json();
     const { userId } = params;
-    const { user, name, email, rolId} = body
+    const { user, name, email, rolId, password} = body
 
-    
-    const updateUser = await prisma.user.update({
-      where: {
-        id: parseInt(userId),
-      },
-      data:{
-        user,
-        name,
-        email,
-        rolId: parseInt(rolId)
-      }
-    });
+            
+    if (!email || !name || !user || !rolId ) {
+      return new NextResponse('Missing info', { status: 400 });
+    }
 
-    return NextResponse.json(updateUser);
-    
+    if (password){
+      const hashedPassword = await bcrypt.hash(password, 12)
+      let updateUser = await prisma.user.update({
+        where: {
+          id: parseInt(userId),
+        },
+        data:{
+          user,
+          name,
+          email,
+          hashedPassword,
+          rolId: parseInt(rolId)
+        }
+      });
+      return NextResponse.json(updateUser);
+    }else{
+      let updateUser = await prisma.user.update({
+        where: {
+          id: parseInt(userId),
+        },
+        data:{
+          user,
+          name,
+          email,
+          rolId: parseInt(rolId)
+        }
+      });
+      return NextResponse.json(updateUser);
+    }
   } catch (error: any) {
     console.log(error, "REGISTRATION_ERROR");
     return new NextResponse(error.meta.target, { status: 500 })

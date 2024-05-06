@@ -28,7 +28,10 @@ interface ChapterDescriptionFormProps {
 }
 
 const formSchema = z.object({
-  contenido: z.string().min(1),
+  contenido: z
+  .string()
+  .min(5, "La descripcion debe de tener minimo 5 caracteres")
+  .max(190, "La descripcion debe de tener maximo 190 caracteres"),
 });
 
 const ChapterDescriptionForm: FC<ChapterDescriptionFormProps> = ({
@@ -99,7 +102,7 @@ const ChapterDescriptionForm: FC<ChapterDescriptionFormProps> = ({
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button disabled={isSubmitting} type="submit">
                 Guardar
               </Button>
             </div>
