@@ -24,6 +24,7 @@ import { signIn, useSession } from "next-auth/react";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const formSchema = z.object({
   user: z
@@ -100,10 +101,10 @@ export default function AuthForm() {
         .catch((error) => {
           if (error.response.data === "User_email_key") {
             toast.error("El correo ya existe");
-          }else if (error.response.data == "Missing info"){
+          } else if (error.response.data == "Missing info") {
             toast.error("Completa el formulario :p");
           }
-           else {
+          else {
             toast.error("Ocurrio un error, intentalo mas tarde");
           }
         })
@@ -134,13 +135,8 @@ export default function AuthForm() {
   const [checked, setChecked] = useState(true);
 
   const handleInput = () => {
-    if (typeInput === "text") {
-      setTypeInput("password");
-      setChecked(false);
-    } else {
-      setTypeInput("text");
-      setChecked(true);
-    }
+    setChecked(!checked)
+    setTypeInput(checked ? "password"  : "text")
   };
 
   return (
@@ -198,12 +194,22 @@ export default function AuthForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Contraseña" {...field} />
+                    <div className="flex flex-row items-center space-x-5">
+                      <Input placeholder="Contraseña" type={typeInput} {...field} />
+                      {
+                        checked
+                          ? (<EyeIcon onClick={() => handleInput()} width={35} height={35} />)
+                          : (<EyeSlashIcon onClick={() => handleInput()} width={35} height={35} />)
+                      }
+
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+
 
             <Button disabled={isLoading} fullWidth type="submit">
               {variant === "LOGIN" ? "Iniciar sesion" : "Registrarse"}

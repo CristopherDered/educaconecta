@@ -32,7 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { Rol, User } from "@prisma/client";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, EyeSlashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 const formSchema = z.object({
   user: z
@@ -68,6 +68,11 @@ const ModificarUsarios: React.FC<ModalUsariosProps> = ({ data, roles }) => {
 
   const [checked, setChecked] = useState(true);
   const [typeInp, setTypInp] = useState("text");
+
+  const handleInput = () => {
+    setChecked(!checked)
+    setTypInp(checked ? "password" : "text")
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -165,7 +170,15 @@ const ModificarUsarios: React.FC<ModalUsariosProps> = ({ data, roles }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="Contraseña" {...field} />
+                        <div className="flex flex-row items-center space-x-5">
+                          <Input placeholder="Contraseña" type={typeInp} {...field} />
+                          {
+                            checked
+                              ? (<EyeIcon onClick={() => handleInput()} width={35} height={35} />)
+                              : (<EyeSlashIcon onClick={() => handleInput()} width={35} height={35} />)
+                          }
+
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

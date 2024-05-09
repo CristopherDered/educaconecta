@@ -23,7 +23,7 @@ import Button from "@/app/components/Button";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
-import { UserPlusIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, EyeSlashIcon, UserPlusIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import axios from "axios";
@@ -78,13 +78,9 @@ const AgregarUsario: React.FC<AgregarUsarioProps> = ({ roles }) => {
     },
   });
 
-  const handleCheckbox = () => {
-    setChecked(!checked);
-    if (checked) {
-      setTypInp("password");
-    } else {
-      setTypInp("text");
-    }
+  const handleInput = () => {
+    setChecked(!checked)
+    setTypInp(checked ? "password" : "text")
   };
 
   const SubmitHandler = (values: z.infer<typeof formSchema>) => {
@@ -173,7 +169,14 @@ const AgregarUsario: React.FC<AgregarUsarioProps> = ({ roles }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="Contraseña" {...field} />
+                        <div className="flex flex-row items-center space-x-5">
+                          <Input placeholder="Contraseña" type={typeInp} {...field} />
+                          {
+                            checked
+                              ? (<EyeIcon onClick={() => handleInput()} width={35} height={35} />)
+                              : (<EyeSlashIcon onClick={() => handleInput()} width={35} height={35} />)
+                          }
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
