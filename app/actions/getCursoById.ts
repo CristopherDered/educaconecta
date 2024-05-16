@@ -3,7 +3,7 @@ import prisma from '@/app/libs/prismadb'
 
 const getCursoById = async (id: number) => {
     try {
-    
+        
         const curso = await prisma.curso.findUnique({
             where: {
                 id: parseInt(id)
@@ -13,12 +13,13 @@ const getCursoById = async (id: number) => {
                     include:{
                         Archivos: true
                     }
-                }
+                },
+                user: true
             }
 
 
         });  
-        
+
         return curso;
     } catch (error: any) {
         return [];

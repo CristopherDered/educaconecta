@@ -17,6 +17,7 @@ datasource db {
 model Escuela {
   id Int @id @default(autoincrement())
   director String @default("Patricio Rodriguez")
+  url String @default("https://upload.wikimedia.org/wikipedia/commons/7/71/Firma_Josep_Irla.png")
 }
 
 model Rol {

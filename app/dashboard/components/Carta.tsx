@@ -11,11 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Curso, Escuela, Inscripciones, User } from "@prisma/client";
-
-import Certificado from "./PDF";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import { IdentificationIcon, TrophyIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
+import { IdentificationIcon, TrophyIcon } from "@heroicons/react/24/outline";
 
 interface CartaProps {
   inscripciones: Inscripciones[];
@@ -25,11 +22,14 @@ const Carta: React.FC<CartaProps> = ({ inscripciones, infoEscuela }) => {
   const router = useRouter();
   const user = useSession()
 
-  
+  const handleCurso = (id: number) => {
+    window.open(`/dashboard/certificados/${id}`)
+  }
+
   return (
     <div className="grid grid-cols-3 space-x-10 space-y-5">
       {inscripciones.map((inscripcion, index) => (
-        <Card key={inscripcion.id} className="w-[380px]"> 
+        <Card key={inscripcion.id} className="w-[380px]">
           <CardHeader>
             <CardTitle>{inscripcion?.curso?.nombre}</CardTitle>
 
@@ -37,15 +37,8 @@ const Carta: React.FC<CartaProps> = ({ inscripciones, infoEscuela }) => {
               Docente: {inscripcion?.curso?.user?.name}
             </CardDescription>
             {
-              inscripcion.cursoTerminado && ( 
-            <PDFDownloadLink
-              document={<Certificado director={infoEscuela.director} alumno={user.data?.user?.name} curso={inscripcion?.curso?.nombre} profesor={inscripcion?.curso?.user?.name} />}
-              fileName="Certificado.pdf"
-            >
-              {({ loading, url, error, blob }) =>
-                loading ? <div>...</div> : <TrophyIcon color="#d48a00" width={25} height={25}/> 
-              }
-            </PDFDownloadLink>
+              inscripcion.cursoTerminado && (
+                <TrophyIcon color="#d48a00" width={25} height={25} onClick={() => handleCurso(inscripcion.curso.id)} />
               )
             }
           </CardHeader>

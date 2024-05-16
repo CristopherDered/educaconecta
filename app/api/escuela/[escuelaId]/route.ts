@@ -11,7 +11,7 @@ export async function PATCH(
   try {
     const body = await request.json();
     const { escuelaId } = params;
-    
+
 
     if (!body) {
       return new NextResponse("Missing info", { status: 400 });

@@ -51,7 +51,7 @@ const DirectorForm: FC<DirectorFormProps> = ({ initialData }) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/escuela/${initialData.id}`, values);
+      await axios.patch(`/api/escuela/${initialData.id || 1}`, values);
       toast.success("Nombre actualizado");
       toggleEdit();
       router.refresh();
@@ -111,7 +111,7 @@ const DirectorForm: FC<DirectorFormProps> = ({ initialData }) => {
             !initialData.director && "text-slate-500 italic"
           )}
         >
-          {initialData.director || "No description"}
+          {initialData.director || "Nombre "}
         </p>
       )}
     </div>

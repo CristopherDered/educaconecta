@@ -8,7 +8,7 @@ const getInfoEscuela = async () => {
                 id: 1
             }
         });
-        return escuela;
+        return escuela || '';
         
     } catch (error: any) {
         return {};

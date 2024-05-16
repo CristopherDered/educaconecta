@@ -5,6 +5,7 @@ import getRoles from "@/app/actions/getRoles";
 import AgregarUsario from "./components/modal/AgregarUsarios";
 import getInfoEscuela from "@/app/actions/getInfoEscuela";
 import { DirectorForm } from "./components/directorForm";
+import AdjuntoForms from "./components/adjuntoForms";
 
 
 const roles = async () => {
@@ -13,10 +14,13 @@ const roles = async () => {
   const infoEscuela = await getInfoEscuela()
 
   return (
-    <div>      
-      <DirectorForm initialData={infoEscuela}  />
-      <AgregarUsario  roles={roles}/>
-      <TablaUsuarios usuarios={usuarios} roles={roles}  />
+    <div>
+      <div className="grid grid-cols-2 gap-12">
+        <DirectorForm initialData={infoEscuela} />
+       <AdjuntoForms initialData={infoEscuela}/>
+      </div>
+      <AgregarUsario roles={roles} />
+      <TablaUsuarios usuarios={usuarios} roles={roles} />
     </div>
   );
 };
