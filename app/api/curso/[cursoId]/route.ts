@@ -1,3 +1,4 @@
+import getSession from '@/app/actions/getSession';
 import prisma from '@/app/libs/prismadb'
 import { NextResponse } from 'next/server'
 
@@ -7,14 +8,40 @@ export async function PATCH(
 ) {
     try {
         const body = await request.json();
+        const session = await getSession()
         const { cursoId } = params;
+
+        const user = await prisma.user.findUnique({
+            where: {
+                email: session?.user?.email
+            }
+        })
+
+        if (!user) {
+            return new NextResponse('Unauthorized', { status: 401 });
+        }
+
+        if (body.nombre) {
+            // Revisamos que el curso no este creado ya
+            const creadoYa = await prisma.curso.findMany({
+                where: {
+                    userId: user.id,
+                    nombre: body.nombre
+                }
+            })
+
+            if (creadoYa.length != 0) {
+                return new NextResponse("curso_ya_creado", { status: 400 });
+            }
+        }
+
 
 
         const curso = await prisma.curso.update({
-            where:{
+            where: {
                 id: parseInt(cursoId)
             },
-            data:{
+            data: {
                 ...body
             }
         })

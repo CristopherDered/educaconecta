@@ -61,8 +61,12 @@ const Formulario = () => {
         router.push(`/dashboard/cursos/registrar/${nuevoCurso.data.id}`);
         toast.success("Curso creado");
       })
-      .catch(() => {
-        toast.error("Ocurrio un error.");
+      .catch((error) => {
+        if(error.response.data === "curso_ya_creado"){
+          toast.error("Ya has creado un curso con este nombre");
+        }else{
+          toast.error("Ocurrio un error.");
+        }
       })
       .finally(() => {
         setIsLoading(false)

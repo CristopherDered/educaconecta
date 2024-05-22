@@ -57,8 +57,12 @@ const TitleForm: FC<TitleFormProps> = ({ courseId, initialData }) => {
       toast.success("Nombre actualizado");
       toggleEdit();
       router.refresh();
-    } catch {
-      // toast.error('Something went wrong');
+    } catch (error) {
+      if(error.response.data === "curso_ya_creado"){
+        toast.error("Ya has creado un curso con este nombre");
+      }else{
+        toast.error("Ocurrio un error.");
+      }
     }
   };
 

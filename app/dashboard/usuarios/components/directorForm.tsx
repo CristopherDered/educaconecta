@@ -30,7 +30,7 @@ const formSchema = z.object({
   director: z
     .string()
     .min(5, "El nombre debe tener un minimo de 5 caracteres")
-    .max(70, "El nombre debe tener un maximo de 40 caracteres")
+    .max(70, "El nombre debe tener un maximo de 70 caracteres")
     .regex(/^[a-zA-Z][a-zA-Z\s]*$/i, "El nombre solo puede contener letras"),
 });
 

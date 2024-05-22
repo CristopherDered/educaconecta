@@ -76,8 +76,13 @@ const FormUnidadesCurso: React.FC<FormUnidadesCursoProps> = ({
       form.reset()
       router.refresh();
 
-    } catch {
-      toast.error("Algo salio mal, intentalo mas tarde");
+    } catch (error) {
+      if(error.response.data === "unidad_ya_creado"){
+        toast.error("Ya has creado una unidad con este nombre");
+      }else{
+        toast.error("Algo salio mal, intentalo mas tarde");
+      }
+       
     }
   };
 

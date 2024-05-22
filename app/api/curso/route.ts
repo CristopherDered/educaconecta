@@ -21,6 +21,21 @@ export async function POST(request: Request) {
           return new NextResponse('Unauthorized', { status: 401 }); 
         }
 
+        // Revisamos que el curso no este creado ya
+
+        const creadoYa = await prisma.curso.findMany({
+          where:{
+            userId: user.id,
+            nombre: nombre
+          }
+        })
+
+        if (creadoYa.length != 0){
+          return new NextResponse("curso_ya_creado", { status: 400 }); 
+        }
+
+
+
         const newCurso = await prisma.curso.create({
             data: {
                 userId: user.id,

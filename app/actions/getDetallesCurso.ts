@@ -21,8 +21,15 @@ const getDetallesCurso = async (cursoId: number) => {
       include: {
         user: true,
         Unidades: {
+          where: {
+            OR:[
+              {contenido: { not: null, }},
+              {Archivos: {some: {urlArchivo: {not: null}}}}
+            ]
+          },
           include: {
             Archivos: true,
+
             // Incluir el progreso del usuario para cada unidad
             ProgresoUsuario: {
               where: {

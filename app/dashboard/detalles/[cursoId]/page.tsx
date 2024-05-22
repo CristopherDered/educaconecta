@@ -15,8 +15,7 @@ interface IParams {
 
 const Detalles = async ({ params }: { params: IParams }) => {
   const detallesCurso = await getDetallesCurso(params.cursoId);
-  console.log(detallesCurso);
-
+  
 
   return (
     <div>
