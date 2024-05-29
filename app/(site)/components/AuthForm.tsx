@@ -93,7 +93,7 @@ export default function AuthForm() {
 
     if (variant === "REGISTER") {
       axios
-        .post("/api/register", { ...values, user: "default", rolId: 1 })
+        .post("/api/register", { ...values, rolId: 1 })
         .then(() => {
           signIn("credentials", values);
           toast.success("Registrado correctamente")
